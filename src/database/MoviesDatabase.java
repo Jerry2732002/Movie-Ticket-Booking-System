@@ -8,15 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesDatabase {
-    private static final String URL = "jdbc:mysql://localhost:3306/ticket_booking";
-    private static final String USERNAME = "root";
-    private static final String PASSWORD = "Jerry@686670";
 
     public static List<Movie> listAllMovies() {
         List<Movie> movies = new ArrayList<>();
         String query = "SELECT * FROM Movies";
 
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
              ResultSet resultSet = statement.executeQuery()) {
 
@@ -41,7 +38,7 @@ public class MoviesDatabase {
 
     public static void addMovie(Movie movie) {
         String query = "INSERT INTO Movies (Name, Duration, Genre, Director, Cast, Description) VALUES (?,?,?,?,?,?)\n";
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, movie.getName());
             statement.setTime(2, movie.getDuration());
@@ -62,7 +59,7 @@ public class MoviesDatabase {
 
     public static void removeMovie(int movieID) {
         String query = "DELETE FROM Movies WHERE MovieID = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, movieID);
             int rowsAffected = statement.executeUpdate();
@@ -79,7 +76,7 @@ public class MoviesDatabase {
     public static Movie findMovieByName(String name) {
         Movie movie = new Movie();
         String query = "SELECT * FROM Movies WHERE Name = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
@@ -100,7 +97,7 @@ public class MoviesDatabase {
 
     public static boolean movieExistsByName(String name) {
         String query = "SELECT 1 FROM Movies WHERE Name = ?";
-        try (Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+        try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, name);
             ResultSet resultSet = statement.executeQuery();
@@ -109,5 +106,4 @@ public class MoviesDatabase {
             throw new RuntimeException("Error while checking if the movie exists: " + e.getMessage());
         }
     }
-
 }
