@@ -135,5 +135,4 @@ public class SeatsDatabase {
         }
         return noOfSeats;
     }
-
 }

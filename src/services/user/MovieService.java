@@ -1,4 +1,4 @@
-package src.services;
+package src.services.user;
 
 import src.database.MoviesDatabase;
 import src.entities.Movie;
@@ -6,7 +6,7 @@ import src.entities.Movie;
 import java.util.List;
 import java.util.Scanner;
 
-public class MovieServices {
+public class MovieService {
     public static void listAllMovies() {
         List<Movie> movies = MoviesDatabase.listAllMovies();
         System.out.println("--------------------------------------------------------------------------------------------");
@@ -18,14 +18,14 @@ public class MovieServices {
                     movie.getMovieID(),
                     movie.getName(),
                     movie.getDuration(),
-                    (movie.getGenre() != null ? movie.getGenre().toString() : "N/A"),
-                    (movie.getDirector() != null ? movie.getDirector() : "N/A")
+                    movie.getGenre(),
+                    movie.getDirector()
             );
         }
         System.out.println("--------------------------------------------------------------------------------------------");
     }
 
-    public static void movieServices() {
+    public static void movieService() {
         Scanner scanner = new Scanner(System.in);
         String choice;
         while (true) {
@@ -36,6 +36,7 @@ public class MovieServices {
                     listAllMovies();
                     break;
                 case "book":
+
                     break;
                 case "back":
                     return;

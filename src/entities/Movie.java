@@ -68,4 +68,16 @@ public class Movie {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public Movie(){}
+
+    public Movie(int movieID, String name, Time duration, String genre, String cast, String director, String description) {
+        this.movieID = movieID;
+        this.name = name;
+        this.duration = duration;
+        this.genre = Genre.valueOf(genre);
+        this.cast = cast;
+        this.director = director;
+        this.description = description;
+    }
 }

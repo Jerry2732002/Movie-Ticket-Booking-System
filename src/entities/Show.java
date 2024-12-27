@@ -1,5 +1,6 @@
 package src.entities;
 
+import java.sql.Date;
 import java.sql.Time;
 
 public class Show {
@@ -8,7 +9,8 @@ public class Show {
     private int movieID;
     private Time startTime;
     private Time endTime;
-    private int availableSeats;
+    private Date date;
+    private Movie movie;
 
     public int getShowID() {
         return showID;
@@ -50,11 +52,30 @@ public class Show {
         this.endTime = endTime;
     }
 
-    public int getAvailableSeats() {
-        return availableSeats;
+    public Date getDate() {
+        return date;
     }
 
-    public void setAvailableSeats(int availableSeats) {
-        this.availableSeats = availableSeats;
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public Movie getMovie() {
+        return movie;
+    }
+
+    public void setMovie(Movie movie) {
+        this.movie = movie;
+    }
+    public Show() {
+    }
+
+    public Show(int showID, int screenID, int movieID, Time startTime, Time endTime, Date date) {
+        this.showID = showID;
+        this.screenID = screenID;
+        this.movieID = movieID;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.date = date;
     }
 }

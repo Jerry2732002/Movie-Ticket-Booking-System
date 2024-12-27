@@ -95,6 +95,22 @@ public class MoviesDatabase {
         }
     }
 
+    public static int getMovieIDByName(String name) {
+        int id = 0;
+        String query = "SELECT * FROM Movies WHERE Name = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, name);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                id = resultSet.getInt(1);
+            }
+            return id;
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
     public static boolean movieExistsByName(String name) {
         String query = "SELECT 1 FROM Movies WHERE Name = ?";
         try (Connection connection = CreateConnection.getConnection();

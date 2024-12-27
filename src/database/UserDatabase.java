@@ -123,4 +123,19 @@ public class UserDatabase {
         }
     }
 
+    public static int getUserID(String username) {
+        String query = "SELECT UserID FROM users WHERE Username = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while fetching userId by name: " + e.getMessage());
+        }
+        return -1;
+    }
 }

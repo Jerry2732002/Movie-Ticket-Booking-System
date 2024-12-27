@@ -50,6 +50,7 @@ public class ScreenDatabase {
         return screens;
     }
 
+
     public static void deleteScreen(int screenNo) {
         String query = "DELETE FROM screens WHERE ScreenNo = ?";
         try (Connection connection = CreateConnection.getConnection();

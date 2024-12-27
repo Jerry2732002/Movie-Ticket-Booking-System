@@ -78,4 +78,26 @@ public class TheatreDatabase {
         }
         return false;
     }
+
+    public static List<Theatre> getTheatresByLocation(String location) {
+        String query = "SELECT * FROM theatres WHERE Location = ?";
+        List<Theatre> theatres = new ArrayList<>();
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setString(1, location);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    Theatre theatre = new Theatre();
+                    theatre.setTheatreID(resultSet.getInt("ID"));
+                    theatre.setName(resultSet.getString("Name"));
+                    theatre.setLocation(resultSet.getString("Location"));
+                    theatres.add(theatre);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while retrieving theatres: " + e.getMessage());
+        }
+        return theatres;
+    }
 }
