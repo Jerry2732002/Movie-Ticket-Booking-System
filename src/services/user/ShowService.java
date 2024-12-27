@@ -69,7 +69,9 @@ public class ShowService {
                         );
                     }
                     System.out.println("Enter 'book' to book the show");
-
+                    if (scanner.next().equalsIgnoreCase("book")) {
+                        BookingService.bookingService(showID);
+                    }
                     break;
                 case "back":
                     return;
