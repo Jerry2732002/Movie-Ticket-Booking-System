@@ -100,7 +100,7 @@ public class BookingDatabase {
     }
 
     public static List<Seat> getAvailableSeats(int showId) {
-        String query = "SELECT * FROM seats WHERE SeatID NOT IN (SELECT SeatID FROM bookings) AND ShowID = ? ";
+        String query = "SELECT * FROM seats WHERE SeatID NOT IN (SELECT SeatID FROM bookings) AND ShowID = ? GROUP BY Category";
         List<Seat> availableSeats = new ArrayList<>();
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {

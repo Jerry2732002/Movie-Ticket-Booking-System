@@ -16,7 +16,9 @@ public class BookingService {
             switch (choice) {
                 case "list":
                     List<Seat> seats = BookingDatabase.getAvailableSeats(showID);
+                    for (int i = 0; i < ScreenService.noOfRows; i++) {
 
+                    }
                 case "select":
                     System.out.println("Enter the SeatNo to select that screen");
                     int seatNo = scanner.nextInt();

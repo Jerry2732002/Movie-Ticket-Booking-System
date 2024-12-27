@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScreenDatabase {
-
     public static void addScreen(Screen screen) {
         String query = "INSERT INTO screens (TheatreID, ScreenNo, NoOfRows) VALUES (?,?,?)";
         try (Connection connection = CreateConnection.getConnection();
@@ -88,6 +87,23 @@ public class ScreenDatabase {
         } catch (SQLException e) {
             System.out.println("Error while retrieving screen: " + e.getMessage());
             return null;
+        }
+    }
+
+    public static int getNoOfRows(int screenId) {
+        String query = "SELECT NoOfRows FROM screens WHERE ScreenID = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, screenId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("NoOfRows");
+            } else {
+                throw new RuntimeException("Screen " + screenId + " not found");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }
