@@ -6,7 +6,9 @@ import src.entities.Movie;
 import src.entities.Screen;
 import src.entities.Show;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,23 +24,29 @@ public class ShowService {
                     List<Show> shows = ShowsDatabase.getAllShowByScreenID(screenId);
                     System.out.println("Shows List for Screen ID: " + screenId);
                     System.out.println("------------------------------------------------");
-                    System.out.printf("%-10s %-30s %-15s %-12s %-12s\n", "ShowID", "Movie Name", "StartTime", "EndTime", "Date");
+                    System.out.printf("%-10s %-30s %-15s %-12s\n", "ShowID", "Movie Name", "StartTime", "EndTime");
                     System.out.println("------------------------------------------------");
 
                     LocalDateTime currentDateTime = LocalDateTime.now();
 
                     boolean foundFutureShow = false;
 
+                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
                     for (Show show : shows) {
-                        LocalDateTime showStartDateTime = LocalDateTime.of(show.getDate().toLocalDate(), show.getStartTime().toLocalTime());
+                        Timestamp startTime = show.getStartTime();
+                        LocalDateTime showStartDateTime = startTime.toLocalDateTime();
 
                         if (showStartDateTime.isAfter(currentDateTime) || showStartDateTime.isEqual(currentDateTime)) {
-                            System.out.printf("%-10d %-30s %-15s %-12s %-12s\n",
+                            String formattedStartTime = showStartDateTime.format(timeFormatter);
+                            LocalDateTime showEndDateTime = show.getEndTime().toLocalDateTime();
+                            String formattedEndTime = showEndDateTime.format(timeFormatter);
+
+                            System.out.printf("%-10d %-30s %-15s %-12s\n",
                                     show.getShowID(),
                                     show.getMovie().getName(),
-                                    show.getStartTime().toString(),
-                                    show.getEndTime().toString(),
-                                    show.getDate().toString()
+                                    formattedStartTime,
+                                    formattedEndTime
                             );
                             foundFutureShow = true;
                         }

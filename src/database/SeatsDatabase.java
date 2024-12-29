@@ -86,6 +86,24 @@ public class SeatsDatabase {
         return seatIDs;
     }
 
+    public static int getSeatIDBySeatNo(String seatNo) {
+        String query = "SELECT SeatID FROM seats WHERE SeatNo = ?";
+        int seatID = -1;
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1,seatNo);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                seatID = resultSet.getInt("SeatID");
+            }else {
+                throw new RuntimeException("No seat by seat no found");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while fetching all seats: " + e.getMessage());
+        }
+        return seatID;
+    }
+
     public static List<String> getAllSeatNos() {
         String query = "SELECT SeatNo FROM seats";
         List<String> seatNos = new ArrayList<>();

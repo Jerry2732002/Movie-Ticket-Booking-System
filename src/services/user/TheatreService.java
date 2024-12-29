@@ -28,7 +28,7 @@ public class TheatreService {
                     break;
 
                 case "search":
-                    System.out.println("Enter theatre name to search");
+                    System.out.println("Enter theatre location to search");
                     scanner.nextLine();
                     List<Theatre> theatresByLocation = TheatreDatabase.getTheatresByLocation(scanner.nextLine());
                     System.out.println("Theatres List:");

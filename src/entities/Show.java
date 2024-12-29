@@ -2,13 +2,14 @@ package src.entities;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 public class Show {
     private int showID;
     private int screenID;
     private int movieID;
-    private Time startTime;
-    private Time endTime;
+    private Timestamp startTime;
+    private Timestamp endTime;
     private Date date;
     private Movie movie;
 
@@ -36,19 +37,19 @@ public class Show {
         this.movieID = movieID;
     }
 
-    public Time getStartTime() {
+    public Timestamp getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(Timestamp startTime) {
         this.startTime = startTime;
     }
 
-    public Time getEndTime() {
+    public Timestamp getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public void setEndTime(Timestamp endTime) {
         this.endTime = endTime;
     }
 
@@ -70,12 +71,11 @@ public class Show {
     public Show() {
     }
 
-    public Show(int showID, int screenID, int movieID, Time startTime, Time endTime, Date date) {
+    public Show(int showID, int screenID, int movieID, Timestamp startTime, Timestamp endTime) {
         this.showID = showID;
         this.screenID = screenID;
         this.movieID = movieID;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.date = date;
     }
 }

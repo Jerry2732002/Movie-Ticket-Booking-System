@@ -18,8 +18,8 @@ public class ShowsDatabase {
         ) {
             statement.setInt(1, show.getScreenID());
             statement.setInt(2, show.getMovieID());
-            statement.setTime(3, show.getStartTime());
-            statement.setTime(4, show.getEndTime());
+            statement.setTimestamp(3, show.getStartTime());
+            statement.setTimestamp(4, show.getEndTime());
             statement.setDate(5, show.getDate());
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
@@ -61,8 +61,8 @@ public class ShowsDatabase {
                 show.setShowID(resultSet.getInt("ShowID"));
                 show.setScreenID(resultSet.getInt("ScreenID"));
                 show.setMovieID(resultSet.getInt("MovieID"));
-                show.setStartTime(resultSet.getTime("StartTime"));
-                show.setEndTime(resultSet.getTime("EndTime"));
+                show.setStartTime(resultSet.getTimestamp("StartTime"));
+                show.setEndTime(resultSet.getTimestamp("EndTime"));
                 show.setDate(resultSet.getDate("Date"));
                 shows.add(show);
             }
@@ -81,7 +81,7 @@ public class ShowsDatabase {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 Show show = new Show(resultSet.getInt("ShowID"),resultSet.getInt("ScreenID"),resultSet.getInt("MovieID"),
-                        resultSet.getTime("StartTime"),resultSet.getTime("EndTime"),resultSet.getDate("Date"));
+                        resultSet.getTimestamp("StartTime"),resultSet.getTimestamp("EndTime"));
                 Movie movie = new Movie(resultSet.getInt("MovieID"),resultSet.getString("Name"),resultSet.getTime("Duration")
                         ,resultSet.getString("Genre"),resultSet.getString("Director"),resultSet.getString("Cast"),resultSet.getString("Description"));
                 show.setMovie(movie);
@@ -101,7 +101,7 @@ public class ShowsDatabase {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 Show show = new Show(resultSet.getInt("ShowID"),resultSet.getInt("ScreenID"),resultSet.getInt("MovieID"),
-                        resultSet.getTime("StartTime"),resultSet.getTime("EndTime"),resultSet.getDate("Date"));
+                        resultSet.getTimestamp("StartTime"),resultSet.getTimestamp("EndTime"));
                 Movie movie = new Movie(resultSet.getInt("MovieID"),resultSet.getString("Name"),resultSet.getTime("Duration")
                         ,resultSet.getString("Genre"),resultSet.getString("Director"),resultSet.getString("Cast"),resultSet.getString("Description"));
                 show.setMovie(movie);

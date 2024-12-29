@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ScreenService {
-    public static int noOfRows;
     public static void screenService(int theatreId) {
         Scanner scanner = new Scanner(System.in);
         String choice;
@@ -33,7 +32,6 @@ public class ScreenService {
                 case "select":
                     System.out.println("Enter the ScreenID to select that screen");
                     int screenId = scanner.nextInt();
-                    noOfRows = ScreenDatabase.getNoOfRows(screenId);
                     ShowService.showService(screenId);
                     break;
 

@@ -14,8 +14,8 @@ public class UserService {
             choice = scanner.next().toLowerCase();
             switch (choice) {
                 case "movies" : MovieService.movieService(); break;
-                case "theatres" : TheatreService.theatreService(); break;
-                case "bookings" : break;
+                case "theatre" : TheatreService.theatreService(); break;
+                case "booking" : break;
                 case "back" : return;
                 default :
                     System.out.println("Incorrect input");

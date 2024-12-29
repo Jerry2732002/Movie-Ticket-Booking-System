@@ -33,7 +33,7 @@ public class ScreenDatabase {
              PreparedStatement statement = connection.prepareStatement(query);
         ) {
             statement.setInt(1, theatreID);
-            try (ResultSet resultSet = statement.executeQuery(query)) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Screen screen = new Screen();
                     screen.setScreenID(resultSet.getInt("ScreenID"));

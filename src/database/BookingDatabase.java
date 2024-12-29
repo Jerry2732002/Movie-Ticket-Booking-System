@@ -7,7 +7,9 @@ import src.enums.Status;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BookingDatabase {
     public static void bookTicket(Booking booking) {
@@ -26,7 +28,7 @@ public class BookingDatabase {
                 System.out.println("Failed to book ticket");
             }
         } catch (SQLException e) {
-                System.err.println("Error while adding user: " + e.getMessage());
+            System.err.println("Error while adding user: " + e.getMessage());
         }
     }
 
@@ -99,24 +101,39 @@ public class BookingDatabase {
         return noOfRowsAvailable;
     }
 
-    public static List<Seat> getAvailableSeats(int showId) {
-        String query = "SELECT * FROM seats WHERE SeatID NOT IN (SELECT SeatID FROM bookings) AND ShowID = ? GROUP BY Category";
-        List<Seat> availableSeats = new ArrayList<>();
+    public static Map<String, List<Seat>> getAvailableSeats(int showId) {
+        String query = "SELECT s.SeatID, s.SeatNo, s.ScreenID, s.Category, s.Price \n" +
+                "FROM seats s \n" +
+                "LEFT JOIN bookings b ON s.SeatID = b.SeatID \n" +
+                "WHERE b.SeatID IS NULL AND s.ScreenID IN (SELECT ScreenID FROM shows WHERE ShowID = ?) \n" +
+                "ORDER BY s.SeatNo;\n";
+        Map<String, List<Seat>> availableSeats = new LinkedHashMap<>();
+
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, showId);
+            statement.setInt(1, showId);  // Set the show ID parameter
             ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 Seat seat = new Seat();
                 seat.setSeatNo(resultSet.getString("SeatNo"));
                 seat.setScreenID(resultSet.getInt("ScreenID"));
                 seat.setCategory(Category.valueOf(resultSet.getString("Category")));
                 seat.setPrice(resultSet.getDouble("Price"));
-                availableSeats.add(seat);
+
+                String row = seat.getSeatNo().substring(0, 1);
+                if (availableSeats.containsKey(row)) {
+                    availableSeats.get(row).add(seat);
+                } else {
+                    List<Seat> seatList = new ArrayList<>();
+                    seatList.add(seat);
+                    availableSeats.put(row, seatList);
+                }
             }
         } catch (SQLException e) {
-            System.err.println("Error while cancelling booking: " + e.getMessage());
+            System.err.println("Error while retrieving available seats: " + e.getMessage());
         }
+
         return availableSeats;
     }
 }

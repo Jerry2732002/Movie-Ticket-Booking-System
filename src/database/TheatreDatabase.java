@@ -35,7 +35,7 @@ public class TheatreDatabase {
         ) {
             while (resultSet.next()) {
                 Theatre theatre = new Theatre();
-                theatre.setTheatreID(resultSet.getInt("ID"));
+                theatre.setTheatreID(resultSet.getInt("TheatreID"));
                 theatre.setName(resultSet.getString("Name"));
                 theatre.setLocation(resultSet.getString("Location"));
                 theatres.add(theatre);
@@ -89,7 +89,7 @@ public class TheatreDatabase {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Theatre theatre = new Theatre();
-                    theatre.setTheatreID(resultSet.getInt("ID"));
+                    theatre.setTheatreID(resultSet.getInt("TheatreID"));
                     theatre.setName(resultSet.getString("Name"));
                     theatre.setLocation(resultSet.getString("Location"));
                     theatres.add(theatre);
