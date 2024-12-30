@@ -46,12 +46,12 @@ public class TheatreDatabase {
         return theatres;
     }
 
-    public static void deleteTheatre(String theatreName) {
-        String query = "DELETE FROM theatres WHERE Name = ?";
+    public static void deleteTheatre(int theatreID) {
+        String query = "DELETE FROM theatres WHERE TheatreID = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
-            statement.setString(1, theatreName);
+            statement.setInt(1, theatreID);
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Theatre successfully deleted");
@@ -63,15 +63,16 @@ public class TheatreDatabase {
         }
     }
 
-    public static boolean theatreExists(String name) {
-        String query = "SELECT COUNT(*) FROM theatres WHERE Name = ?";
+    public static boolean theatreExists(String name, String location) {
+        String query = "SELECT 1 FROM theatres WHERE Name = ? AND Location = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
             statement.setString(1, name);
+            statement.setString(2, location);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt(1) > 0;
+                return true;
             }
         } catch (SQLException e) {
             System.out.println("Error while checking if theatre exists: " + e.getMessage());
@@ -99,5 +100,24 @@ public class TheatreDatabase {
             System.out.println("Error while retrieving theatres: " + e.getMessage());
         }
         return theatres;
+    }
+
+    public static boolean hasFutureShows(int theatreID) {
+        String query = "SELECT 1 FROM theatres t \n" +
+                "JOIN screens s ON t.TheatreID = s.TheatreID\n" +
+                "JOIN shows sh ON sh.ScreenID = s.ScreenID  WHERE t.TheatreID = ?\n" +
+                "AND sh.StartTime > NOW()";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, theatreID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while checking if theatre exists: " + e.getMessage());
+        }
+        return false;
     }
 }

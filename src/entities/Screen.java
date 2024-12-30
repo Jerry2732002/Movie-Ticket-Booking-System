@@ -4,7 +4,6 @@ public class Screen {
     private int screenID;
     private int theatreID;
     private int screenNo;
-    private int noOfRows;
 
     public int getScreenID() {
         return screenID;
@@ -28,23 +27,5 @@ public class Screen {
 
     public void setTheatreID(int theatreID) {
         this.theatreID = theatreID;
-    }
-
-    public int getNoOfRows() {
-        return noOfRows;
-    }
-
-    public void setNoOfRows(int noOfRows) {
-        this.noOfRows = noOfRows;
-    }
-
-    @Override
-    public String toString() {
-        return "Screen{" +
-                "screenID=" + screenID +
-                ", theatreID=" + theatreID +
-                ", screenNo=" + screenNo +
-                ", totalSeats=" + noOfRows +
-                '}';
     }
 }

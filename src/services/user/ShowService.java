@@ -17,6 +17,7 @@ public class ShowService {
         Scanner scanner = new Scanner(System.in);
         String choice;
         while (true) {
+            System.out.println("SHOW MENU :");
             System.out.println("Enter 'list' to list all shows\nEnter 'select' to select a show\nEnter 'back' to go back");
             choice = scanner.next().toLowerCase();
             switch (choice) {
@@ -67,21 +68,27 @@ public class ShowService {
                         System.out.printf("%-5s %-30s %-12s %-20s %-25s\n", "ID", "Name", "Duration", "Genre", "Director");
                         System.out.println("--------------------------------------------------------------------------------------------");
                         Movie movie = ShowsDatabase.getShowByShowID(showID).getMovie();
-                        System.out.printf(
-                                "%-5d %-30s %-12s %-20s %-25s\n",
-                                movie.getMovieID(),
-                                movie.getName(),
-                                movie.getDuration(),
-                                movie.getGenre(),
-                                movie.getDirector()
-                        );
+                        if (movie != null) {
+                            System.out.printf(
+                                    "%-5d %-30s %-12s %-20s %-25s\n",
+                                    movie.getMovieID(),
+                                    movie.getName(),
+                                    movie.getDuration(),
+                                    movie.getGenre(),
+                                    movie.getDirector()
+                            );
+                        }else {
+                            System.out.println("No show found with id : " + showID);
+                        }
+
                     }
                     System.out.println("Enter 'book' to book the show");
                     if (scanner.next().equalsIgnoreCase("book")) {
-                        BookingService.bookingService(showID);
+                        SeatService.seatService(showID);
                     }
                     break;
                 case "back":
+                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

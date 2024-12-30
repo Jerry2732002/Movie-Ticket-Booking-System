@@ -1,6 +1,7 @@
 package src.database;
 
 import src.entities.Booking;
+import src.entities.BookingDetails;
 import src.entities.Seat;
 import src.enums.Category;
 import src.enums.Status;
@@ -32,26 +33,51 @@ public class BookingDatabase {
         }
     }
 
-    public static List<Booking> getBookingHistory(int userID) {
-        String query = "SELECT * FROM bookings WHERE UserID = ? AND Status != 'CANCELLED' ORDER BY BookingDate DESC";
-        List<Booking> bookings = new ArrayList<>();
+    public static List<BookingDetails> getBookingHistory(int userID) {
+        String query = "SELECT b.BookingID,s.SeatNo, sc.ScreenNo, sh.StartTime,t.Name,t.Location FROM bookings b\n" +
+                "JOIN shows sh ON b.ShowID = sh.ShowID\n" +
+                "JOIN seats s ON b.SeatID = s.SeatID\n" +
+                "JOIN screens sc ON sc.ScreenID = sh.ScreenID\n" +
+                "JOIN theatres t ON t.TheatreID = sc.TheatreID\n" +
+                "WHERE b.Status != 'CANCELLED' AND b.UserID = ? ORDER BY BookingDate DESC";
+        List<BookingDetails> bookingDetails = new ArrayList<>();
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, userID);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                int bookingID = resultSet.getInt("BookingID");
-                int showID = resultSet.getInt("ShowID");
-                int seatID = resultSet.getInt("SeatID");
-                Timestamp bookingDate = resultSet.getTimestamp("BookingDate");
-                String status = resultSet.getString("Status");
-                Booking booking = new Booking(bookingID, userID, showID, seatID, bookingDate, Status.valueOf(status));
-                bookings.add(booking);
+                int bookingId = resultSet.getInt("BookingID");
+                String seatNo = resultSet.getString("SeatNo");
+                int screenNo = resultSet.getInt("ScreenNo");
+                Timestamp startTime = resultSet.getTimestamp("StartTime");
+                String theatreName = resultSet.getString("Name");
+                String location = resultSet.getString("Location");
+                BookingDetails details = new BookingDetails(bookingId,seatNo, screenNo, startTime, theatreName, location);
+                bookingDetails.add(details);
             }
         } catch (SQLException e) {
             System.err.println("Error while fetching booking history: " + e.getMessage());
         }
-        return bookings;
+        return bookingDetails;
+    }
+
+    public static Timestamp getShowDateByBookingID(int bookingID) {
+        String query = "SELECT StartTime FROM bookings b \n" +
+                "JOIN shows s ON b.ShowID = s.ShowID WHERE BookingID = ?";
+        Timestamp showDate = null;
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, bookingID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                showDate  = resultSet.getTimestamp("StartTime");
+            }else {
+                System.out.println("No Booking Found with id :" + bookingID);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while fetching booking history: " + e.getMessage());
+        }
+        return showDate;
     }
 
     public static int getBookingCountForShow(int showID) {
@@ -103,22 +129,22 @@ public class BookingDatabase {
 
     public static Map<String, List<Seat>> getAvailableSeats(int showId) {
         String query = "SELECT s.SeatID, s.SeatNo, s.ScreenID, s.Category, s.Price \n" +
-                "FROM seats s \n" +
-                "LEFT JOIN bookings b ON s.SeatID = b.SeatID \n" +
-                "WHERE b.SeatID IS NULL AND s.ScreenID IN (SELECT ScreenID FROM shows WHERE ShowID = ?) \n" +
+                "FROM seats s\n" +
+                "LEFT JOIN bookings b ON s.SeatID = b.SeatID AND b.Status != 'CANCELLED'\n" +
+                "WHERE b.SeatID IS NULL AND s.ScreenID IN (SELECT ScreenID FROM shows WHERE ShowID = ?)\n" +
                 "ORDER BY s.SeatNo;\n";
         Map<String, List<Seat>> availableSeats = new LinkedHashMap<>();
 
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, showId);  // Set the show ID parameter
+            statement.setInt(1, showId);
             ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Seat seat = new Seat();
                 seat.setSeatNo(resultSet.getString("SeatNo"));
                 seat.setScreenID(resultSet.getInt("ScreenID"));
-                seat.setCategory(Category.valueOf(resultSet.getString("Category")));
+                seat.setCategory(Category.valueOf(resultSet.getString("Category").toUpperCase()));
                 seat.setPrice(resultSet.getDouble("Price"));
 
                 String row = seat.getSeatNo().substring(0, 1);

@@ -39,6 +39,7 @@ public class MovieService {
 
                     break;
                 case "back":
+                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

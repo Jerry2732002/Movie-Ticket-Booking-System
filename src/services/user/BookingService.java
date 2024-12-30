@@ -1,20 +1,19 @@
 package src.services.user;
 
 import src.database.BookingDatabase;
-import src.database.SeatsDatabase;
 import src.entities.Booking;
-import src.entities.Seat;
-import src.entities.User;
+import src.entities.BookingDetails;
 import src.enums.Status;
 
 import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 public class BookingService {
 
-    public static void bookTicket( int showID, int seatID) {
+    public static void bookTicket(int showID, int seatID) {
         Booking booking = new Booking();
         booking.setUserID(UserService.userId);
         booking.setShowID(showID);
@@ -25,39 +24,52 @@ public class BookingService {
         BookingDatabase.bookTicket(booking);
     }
 
-    public static void bookingService(int showID) {
+    public static void bookingService() {
         Scanner scanner = new Scanner(System.in);
         String choice;
         while (true) {
-            System.out.println("Enter 'list' to list all available seats\nEnter 'select' to select a seat\nEnter 'back' to go back");
+            System.out.println("Booking MENU :");
+            System.out.println("Enter 'list' to list all booking\nEnter 'cancel' to cancel a show\nEnter 'back' to go back");
             choice = scanner.next().toLowerCase();
             switch (choice) {
                 case "list":
-                    Map<String, List<Seat>> availableSeats = BookingDatabase.getAvailableSeats(showID);
+                    List<BookingDetails> bookingDetails = BookingDatabase.getBookingHistory(UserService.userId);
+                    System.out.println("------------------------------------------------------------");
+                    System.out.printf("%-8s %-8s %-10s %-12s %-12s %-20s %-30s\n", "BookingID", "SeatNo", "ScreenNo", "Date", "Time", "Theatre Name", "Theatre Location");
+                    System.out.println("------------------------------------------------------------");
 
-                    for (Map.Entry<String, List<Seat>> entry : availableSeats.entrySet()) {
-                        String row = entry.getKey();
-                        List<Seat> seatsInRow = entry.getValue();
-                        StringBuilder seatRow = new StringBuilder();
-                        for (Seat seat : seatsInRow) {
-                            seatRow.append(seat.getSeatNo()).append(" ");
-                        }
+                    for (BookingDetails details : bookingDetails) {
+                        System.out.printf("%-8s %-10s %-8d %-12s %-12s %-20s %-30s\n",
+                                details.getBookingId(),
+                                details.getSeatNo(),
+                                details.getScreenNo(),
+                                details.getDate(),
+                                details.getTime(),
+                                details.getTheatreName(),
+                                details.getLocation());
+                    }
 
-                        if (!seatsInRow.isEmpty()) {
-                            Seat firstSeat = seatsInRow.get(0);
-                            seatRow.append(String.format("[%s %.2f/-]", firstSeat.getCategory(), firstSeat.getPrice()));
+                    System.out.println("------------------------------------------------------------");
+                    break;
+                case "cancel":
+                    System.out.println("Enter the Booking id to cancel booking");
+                    int bookingId = scanner.nextInt();
+                    Timestamp showDate = BookingDatabase.getShowDateByBookingID(bookingId);
+                    if (showDate != null) {
+                        LocalDateTime showDateTime = showDate.toLocalDateTime();
+
+                        LocalDateTime currentTime = LocalDateTime.now();
+
+                        Duration duration = Duration.between(currentTime, showDateTime);
+
+                        if (duration.toMinutes() > 30) {
+                            BookingDatabase.cancelBooking(bookingId);
+                            System.out.println("Booking ID " + bookingId + " has been successfully cancelled.");
                         }
-                        System.out.println(seatRow);
                     }
                     break;
-                case "select":
-                    System.out.println("Enter the SeatNo to select that seat to book");
-                    String seatNo = scanner.next();
-                    int seatID = SeatsDatabase.getSeatIDBySeatNo(seatNo);
-                    bookTicket(showID,seatID);
-                    break;
-
                 case "back":
+                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

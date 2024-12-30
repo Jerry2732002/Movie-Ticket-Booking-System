@@ -8,13 +8,12 @@ import java.util.List;
 
 public class ScreenDatabase {
     public static void addScreen(Screen screen) {
-        String query = "INSERT INTO screens (TheatreID, ScreenNo, NoOfRows) VALUES (?,?,?)";
+        String query = "INSERT INTO screens (TheatreID, ScreenNo) VALUES (?,?)";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
             statement.setInt(1, screen.getTheatreID());
             statement.setInt(2, screen.getScreenNo());
-            statement.setInt(3, screen.getNoOfRows());
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Screen successfully added");
@@ -39,7 +38,6 @@ public class ScreenDatabase {
                     screen.setScreenID(resultSet.getInt("ScreenID"));
                     screen.setTheatreID(resultSet.getInt("TheatreID"));
                     screen.setScreenNo(resultSet.getInt("ScreenNo"));
-                    screen.setNoOfRows(resultSet.getInt("NoOfRows"));
                     screens.add(screen);
                 }
             }
@@ -67,43 +65,19 @@ public class ScreenDatabase {
         }
     }
 
-    public static Screen getScreenByScreenNo(int screenNo) {
-        String query = "SELECT * FROM screens WHERE ScreenNo = ?";
+    public static boolean checkScreenExists(int screenNo, int theatreID) {
+        String query = "SELECT 1 FROM screens WHERE ScreenNo = ? AND TheatreID = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
             statement.setInt(1, screenNo);
+            statement.setInt(2, theatreID);
             ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                Screen screen = new Screen();
-                screen.setScreenID(resultSet.getInt("ScreenID"));
-                screen.setTheatreID(resultSet.getInt("TheatreID"));
-                screen.setScreenNo(resultSet.getInt("ScreenNo"));
-                screen.setNoOfRows(resultSet.getInt("NoOfRows"));
-                return screen;
-            } else {
-                throw new RuntimeException("Screen No." + screenNo + " not found");
-            }
-        } catch (SQLException e) {
-            System.out.println("Error while retrieving screen: " + e.getMessage());
-            return null;
-        }
-    }
+            return resultSet.next();
 
-    public static int getNoOfRows(int screenId) {
-        String query = "SELECT NoOfRows FROM screens WHERE ScreenID = ?";
-        try (Connection connection = CreateConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)
-        ) {
-            statement.setInt(1, screenId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt("NoOfRows");
-            } else {
-                throw new RuntimeException("Screen " + screenId + " not found");
-            }
         } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
+            System.out.println("Error while checking screen exists: " + e.getMessage());
         }
+        return false;
     }
 }

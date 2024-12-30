@@ -71,7 +71,7 @@ public class Movie {
 
     public Movie(){}
 
-    public Movie(int movieID, String name, Time duration, String genre, String cast, String director, String description) {
+    public Movie(int movieID, String name, Time duration, String genre, String director, String cast, String description) {
         this.movieID = movieID;
         this.name = name;
         this.duration = duration;

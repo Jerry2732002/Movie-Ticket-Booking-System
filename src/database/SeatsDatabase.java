@@ -96,7 +96,7 @@ public class SeatsDatabase {
             if (resultSet.next()) {
                 seatID = resultSet.getInt("SeatID");
             }else {
-                throw new RuntimeException("No seat by seat no found");
+                return -1;
             }
         } catch (SQLException e) {
             System.err.println("Error while fetching all seats: " + e.getMessage());

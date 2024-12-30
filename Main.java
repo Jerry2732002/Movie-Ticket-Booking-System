@@ -1,14 +1,10 @@
-
-import src.database.CreateConnection;
+import src.services.admin.AdminService;
 import src.services.user.UserService;
-
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Scanner;
 
 
 public class Main {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args){
         Scanner scanner = new Scanner(System.in);
         String choice;
         do {
@@ -16,11 +12,22 @@ public class Main {
             choice = scanner.next();
             switch (choice.toLowerCase()) {
                 case "admin":
+                    AdminService.authenticateAdmin();
                     break;
                 case "user":
-                    UserService.authenticateUser();
+                    System.out.println("Enter 'login' to login\nEnter 'register' to register");
+                    switch (scanner.next().toLowerCase()) {
+                        case "login":
+                            UserService.authenticateUser();
+                            break;
+                        case "register":
+                            UserService.register();
+                            break;
+                    }
                     break;
-                case "exit": break;
+                case "exit":
+                    scanner.close();
+                    break;
                 default:
                     System.out.println("Incorrect input");
             }
