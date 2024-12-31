@@ -12,7 +12,7 @@ public class MoviesDatabase {
 
     public static List<Movie> listAllMovies() {
         List<Movie> movies = new ArrayList<>();
-        String query = "SELECT * FROM Movies";
+        String query = "SELECT * FROM movies";
 
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -38,7 +38,7 @@ public class MoviesDatabase {
     }
 
     public static void addMovie(Movie movie) {
-        String query = "INSERT INTO Movies (Name, Duration, Genre, Director, Cast, Description) VALUES (?,?,?,?,?,?)\n";
+        String query = "INSERT INTO movies (Name, Duration, Genre, Director, Cast, Description) VALUES (?,?,?,?,?,?)\n";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, movie.getName());
@@ -59,7 +59,7 @@ public class MoviesDatabase {
     }
 
     public static void removeMovie(int movieID) {
-        String query = "DELETE FROM Movies WHERE MovieID = ?";
+        String query = "DELETE FROM movies WHERE MovieID = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, movieID);
@@ -76,7 +76,7 @@ public class MoviesDatabase {
 
     public static Movie findMovieByName(String name) {
         Movie movie = new Movie();
-        String query = "SELECT * FROM Movies WHERE Name = ?";
+        String query = "SELECT * FROM movies WHERE Name = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, name);
@@ -98,7 +98,7 @@ public class MoviesDatabase {
 
     public static int getMovieIDByName(String name) {
         int id = 0;
-        String query = "SELECT * FROM Movies WHERE Name = ?";
+        String query = "SELECT * FROM movies WHERE Name = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, name);
@@ -115,7 +115,7 @@ public class MoviesDatabase {
     }
 
     public static boolean movieExistsByName(String name) {
-        String query = "SELECT 1 FROM Movies WHERE Name = ?";
+        String query = "SELECT 1 FROM movies WHERE Name = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, name);

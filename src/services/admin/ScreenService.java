@@ -2,13 +2,12 @@ package src.services.admin;
 
 import src.database.ScreenDatabase;
 import src.entities.Screen;
-import src.services.user.ShowService;
+import src.services.admin.ShowService;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class ScreenService {
-
 
     public static void screenService(int theatreId, Scanner scanner) {
         String choice;
@@ -56,7 +55,13 @@ public class ScreenService {
                         ScreenDatabase.addScreen(screen);
 
                         System.out.println("Add seats to the screen----> Going to seats operation");
-                        SeatService.addSeats(ScreenDatabase.getScreenID(theatreId,screenNo),scanner);
+                        int screenID = ScreenDatabase.getScreenID(theatreId,screenNo);
+                        SeatService.addSeats(screenID,scanner);
+
+                        System.out.println("Mandatory for new screen to have atleast 4 shows. \nPlease Enter 4 shows");
+                        for (int i = 0; i < 4; i++) {
+                            ShowService.addShow(screenID,scanner);
+                        }
                     } else {
                         System.out.println("Screen No. already exists");
                     }

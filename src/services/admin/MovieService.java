@@ -15,6 +15,7 @@ public class MovieService {
         while (true) {
             System.out.println("Enter 'list' to list all movies" +
                     "\nEnter 'add' to add movie" +
+                    "\nEnter 'remove' to remove movie" +
                     "\nEnter 'back' to go back");
             choice = scanner.next().toLowerCase();
             switch (choice) {
@@ -57,7 +58,7 @@ public class MovieService {
 
                         System.out.println("Enter the director's name:");
                         String director = scanner.nextLine();
-                        System.out.println("Enter the cast (separate names with commas if multiple):");
+                        System.out.println("Enter the cast:");
                         String cast = scanner.nextLine();
                         System.out.println("Enter a brief description of the movie:");
                         String description = scanner.nextLine();

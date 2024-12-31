@@ -75,6 +75,6 @@ public class MovieDetail {
         this.location = location;
         this.screenNo = screenNo;
         this.date = startTime.toLocalDateTime().toLocalDate();
-        this.time = Time.valueOf(startTime.toLocalDateTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")));
+        this.time = Time.valueOf(startTime.toLocalDateTime().toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
     }
 }

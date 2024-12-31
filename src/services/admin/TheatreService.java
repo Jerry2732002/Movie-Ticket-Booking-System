@@ -54,10 +54,17 @@ public class TheatreService {
 
                 case "add":
                     Theatre theatre = new Theatre();
+
+                    scanner.nextLine();
+
                     System.out.println("Enter Theatre Name");
-                    theatre.setName(scanner.nextLine());
+                    String name = scanner.nextLine();
+                    theatre.setName(name);
+
                     System.out.println("Enter Location");
-                    theatre.setLocation(scanner.nextLine());
+                    String location = scanner.nextLine();
+                    theatre.setLocation(location);
+
                     if (!TheatreDatabase.theatreExists(theatre.getName(), theatre.getLocation())) {
                         TheatreDatabase.addTheatre(theatre);
                     } else {

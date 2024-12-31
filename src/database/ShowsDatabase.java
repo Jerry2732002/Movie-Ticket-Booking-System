@@ -49,29 +49,6 @@ public class ShowsDatabase {
     }
 
 
-    public static List<Show> getAllShowByMovieID(int movieId) {
-        String query = "SELECT * FROM shows WHERE MovieID = ?";
-        List<Show> shows = new ArrayList<>();
-        try (Connection connection = CreateConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, movieId);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                Show show = new Show();
-                show.setShowID(resultSet.getInt("ShowID"));
-                show.setScreenID(resultSet.getInt("ScreenID"));
-                show.setMovieID(resultSet.getInt("MovieID"));
-                show.setStartTime(resultSet.getTimestamp("StartTime"));
-                show.setEndTime(resultSet.getTimestamp("EndTime"));
-                show.setDate(resultSet.getDate("Date"));
-                shows.add(show);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error while fetching show by ScreenID: " + e.getMessage());
-        }
-        return shows;
-    }
-
     public static List<Show> getAllShowByScreenID(int screenID) {
         String query = "SELECT * FROM shows JOIN movies ON shows.MovieID = movies.MovieID WHERE ScreenID = ?";
         List<Show> shows = new ArrayList<>();
@@ -121,9 +98,48 @@ public class ShowsDatabase {
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, showID);
             ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                System.out.println("No show with ID" + showID);
+            }
         } catch (SQLException e) {
             System.err.println("Error while fetching show by ScreenID: " + e.getMessage());
         }
         return -1;
+    }
+
+    public static int getNoOfShows(int screenID) {
+        String query = "SELECT COUNT(*) FROM shows\n" +
+                "WHERE ScreenID = ?;";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, screenID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1);
+            } else {
+                System.out.println("No show with ID" + screenID);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error while fetching show by ScreenID: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static boolean updateShow(Show show) {
+        String query = "UPDATE shows SET StartTime = ?, EndTime = ?, Date = ? WHERE ShowID = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setTimestamp(1, show.getStartTime());
+            statement.setTimestamp(2, show.getEndTime());
+            statement.setDate(3, show.getDate());
+            statement.setInt(4, show.getShowID());
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error while updating show: " + e.getMessage());
+        }
+        return false;
     }
 }
