@@ -7,23 +7,26 @@ import java.util.Scanner;
 
 public class UserService {
     public static int userId;
-
-    public static void userService() {
-        Scanner scanner = new Scanner(System.in);
+    public static void userService(Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("USER MENU :");
-            System.out.println("Enter 'theatre' to go to theatre operation\nEnter 'booking' to go to booking operation\nEnter 'back' to go back");
+            System.out.println("Enter 'theatre' to go to theatre operation" +
+                    "\nEnter 'booking' to go to booking operation" +
+                    "\nEnter 'movie' to go to movies operations" +
+                    "\nEnter 'back' to go back");
             choice = scanner.next().toLowerCase();
             switch (choice) {
                 case "theatre":
-                    TheatreService.theatreService();
+                    TheatreService.theatreService(scanner);
                     break;
                 case "booking":
-                    BookingService.bookingService();
+                    BookingService.bookingService(scanner);
+                    break;
+                case "movie":
+                    MovieService.movieService(scanner);
                     break;
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");
@@ -31,8 +34,7 @@ public class UserService {
         }
     }
 
-    public static void register() {
-        Scanner scanner = new Scanner(System.in);
+    public static void register(Scanner scanner) {
         System.out.println("Enter Username");
         String username = scanner.next();
         if (!UserDatabase.userExists(username)) {
@@ -47,23 +49,20 @@ public class UserService {
             UserDatabase.addUser(user);
         } else {
             System.out.println("Username already exists try another name");
-            register();
+            register(scanner);
         }
-        scanner.close();
     }
 
-    public static void authenticateUser() {
-        Scanner scanner = new Scanner(System.in);
+    public static void authenticateUser(Scanner scanner) {
         System.out.println("Enter username");
         String username = scanner.next();
         System.out.println("Enter password");
         String password = scanner.next();
         if (UserDatabase.authenticateUser(username, password)) {
             UserService.userId = UserDatabase.getUserID(username);
-            userService();
+            userService(scanner);
         } else {
             System.err.println("Incorrect username or password");
         }
-        scanner.close();
     }
 }

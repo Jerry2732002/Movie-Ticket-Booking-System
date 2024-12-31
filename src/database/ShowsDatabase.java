@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ShowsDatabase {
     public static void addShow(Show show) {
-        String query = "INSERT INTO shows (ScreenID, MovieID, StartTime, EndTime, Date) VALUES (?,?,?,?,?)";
+        String query = "INSERT INTO shows (MovieID, StartTime, EndTime, Date) VALUES (?,?,?,?)";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
@@ -23,7 +23,7 @@ public class ShowsDatabase {
             statement.setDate(5, show.getDate());
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
-                System.out.println("Screen successfully added");
+                System.out.println("Show successfully added");
             } else {
                 System.out.println("Failed to add new theatre ");
             }
@@ -41,7 +41,7 @@ public class ShowsDatabase {
             if (rowsAffected > 0) {
                 System.out.println("Show deleted successfully.");
             } else {
-                System.out.println("Failed to delete show.");
+                System.out.println("No show with ShowID:" + showId);
             }
         } catch (SQLException e) {
             System.err.println("Error while deleting show: " + e.getMessage());
@@ -111,5 +111,19 @@ public class ShowsDatabase {
             System.err.println("Error while fetching show by show Id: " + e.getMessage());
         }
         return null;
+    }
+
+    public static int getNoOfBooking(int showID) {
+        String query = "SELECT COUNT(*) FROM shows sh \n" +
+                "JOIN bookings b ON sh.ShowID = b.ShowID\n" +
+                "WHERE sh.ShowID = ? AND b.Status != 'CANCELLED'";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, showID);
+            ResultSet resultSet = statement.executeQuery();
+        } catch (SQLException e) {
+            System.err.println("Error while fetching show by ScreenID: " + e.getMessage());
+        }
+        return -1;
     }
 }

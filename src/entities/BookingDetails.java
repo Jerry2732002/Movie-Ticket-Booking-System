@@ -8,7 +8,7 @@ public class BookingDetails {
     private int bookingId;
     private String seatNo;
     private int screenNo;
-    private LocalDate date;  // Store only the date
+    private LocalDate date;
     private String time;
     private String theatreName;
     private String location;

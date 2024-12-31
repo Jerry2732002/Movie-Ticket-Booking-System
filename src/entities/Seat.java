@@ -48,4 +48,15 @@ public class Seat {
     public void setPrice(double price) {
         this.price = price;
     }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "seatID=" + seatID +
+                ", seatNo='" + seatNo + '\'' +
+                ", screenID=" + screenID +
+                ", category=" + category +
+                ", price=" + price +
+                '}';
+    }
 }

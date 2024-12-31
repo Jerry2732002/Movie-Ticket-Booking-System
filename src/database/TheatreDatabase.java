@@ -80,6 +80,23 @@ public class TheatreDatabase {
         return false;
     }
 
+    public static int getTheatreIDByName(String name, String location) {
+        String query = "SELECT TheatreID FROM theatres WHERE Name = ? AND Location = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setString(1, name);
+            statement.setString(2, location);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("TheatreID");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while checking if theatre exists: " + e.getMessage());
+        }
+        return -1;
+    }
+
     public static List<Theatre> getTheatresByLocation(String location) {
         String query = "SELECT * FROM theatres WHERE Location = ?";
         List<Theatre> theatres = new ArrayList<>();
@@ -101,6 +118,8 @@ public class TheatreDatabase {
         }
         return theatres;
     }
+
+
 
     public static boolean hasFutureShows(int theatreID) {
         String query = "SELECT 1 FROM theatres t \n" +

@@ -5,6 +5,7 @@ public class Screen {
     private int theatreID;
     private int screenNo;
 
+
     public int getScreenID() {
         return screenID;
     }
@@ -28,4 +29,5 @@ public class Screen {
     public void setTheatreID(int theatreID) {
         this.theatreID = theatreID;
     }
+
 }

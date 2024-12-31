@@ -48,12 +48,12 @@ public class ScreenDatabase {
     }
 
 
-    public static void deleteScreen(int screenNo) {
-        String query = "DELETE FROM screens WHERE ScreenNo = ?";
+    public static void deleteScreen(int screenID) {
+        String query = "DELETE FROM screens WHERE ScreenID = ?";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
-            statement.setInt(1, screenNo);
+            statement.setInt(1, screenID);
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Screen successfully deleted");
@@ -61,7 +61,7 @@ public class ScreenDatabase {
                 System.out.println("Failed to delete screen");
             }
         } catch (SQLException e) {
-            System.out.println("Error while deleting screen: " + e.getMessage());
+            System.err.println("Error while deleting screen: " + e.getMessage());
         }
     }
 
@@ -77,6 +77,42 @@ public class ScreenDatabase {
 
         } catch (SQLException e) {
             System.out.println("Error while checking screen exists: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static int getScreenID(int theatreID, int screenNo) {
+        String query = "SELECT ScreenID FROM screens \n" +
+                "WHERE ScreenNo = ? AND TheatreID = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, screenNo);
+            statement.setInt(2, theatreID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt("ScreenID");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while checking if theatre exists: " + e.getMessage());
+        }
+        return -1;
+    }
+
+    public static boolean hasFutureShows(int screenID) {
+        String query = "SELECT * FROM screens s\n" +
+                "JOIN shows sh ON s.ScreenID = sh.ScreenID\n" +
+                "WHERE s.ScreenID = ?; ";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, screenID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while checking if theatre exists: " + e.getMessage());
         }
         return false;
     }

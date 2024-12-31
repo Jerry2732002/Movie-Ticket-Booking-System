@@ -13,8 +13,46 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ShowService {
-    public static void showService(int screenId) {
-        Scanner scanner = new Scanner(System.in);
+
+    public static void listShows(int screenId) {
+        List<Show> shows = ShowsDatabase.getAllShowByScreenID(screenId);
+        System.out.println("Shows List for Screen ID: " + screenId);
+        System.out.println("------------------------------------------------");
+        System.out.printf("%-10s %-30s %-15s %-12s\n", "ShowID", "Movie Name", "StartTime", "EndTime");
+        System.out.println("------------------------------------------------");
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        boolean foundFutureShow = false;
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        for (Show show : shows) {
+            Timestamp startTime = show.getStartTime();
+            LocalDateTime showStartDateTime = startTime.toLocalDateTime();
+
+            if (showStartDateTime.isAfter(currentDateTime) || showStartDateTime.isEqual(currentDateTime)) {
+                String formattedStartTime = showStartDateTime.format(timeFormatter);
+                LocalDateTime showEndDateTime = show.getEndTime().toLocalDateTime();
+                String formattedEndTime = showEndDateTime.format(timeFormatter);
+
+                System.out.printf("%-10d %-30s %-15s %-12s\n",
+                        show.getShowID(),
+                        show.getMovie().getName(),
+                        formattedStartTime,
+                        formattedEndTime
+                );
+                foundFutureShow = true;
+            }
+        }
+        if (!foundFutureShow) {
+            System.out.println("No upcoming shows available.");
+        }
+
+        System.out.println("------------------------------------------------");
+    }
+
+    public static void showService(int screenId,Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("SHOW MENU :");
@@ -22,41 +60,7 @@ public class ShowService {
             choice = scanner.next().toLowerCase();
             switch (choice) {
                 case "list":
-                    List<Show> shows = ShowsDatabase.getAllShowByScreenID(screenId);
-                    System.out.println("Shows List for Screen ID: " + screenId);
-                    System.out.println("------------------------------------------------");
-                    System.out.printf("%-10s %-30s %-15s %-12s\n", "ShowID", "Movie Name", "StartTime", "EndTime");
-                    System.out.println("------------------------------------------------");
-
-                    LocalDateTime currentDateTime = LocalDateTime.now();
-
-                    boolean foundFutureShow = false;
-
-                    DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-
-                    for (Show show : shows) {
-                        Timestamp startTime = show.getStartTime();
-                        LocalDateTime showStartDateTime = startTime.toLocalDateTime();
-
-                        if (showStartDateTime.isAfter(currentDateTime) || showStartDateTime.isEqual(currentDateTime)) {
-                            String formattedStartTime = showStartDateTime.format(timeFormatter);
-                            LocalDateTime showEndDateTime = show.getEndTime().toLocalDateTime();
-                            String formattedEndTime = showEndDateTime.format(timeFormatter);
-
-                            System.out.printf("%-10d %-30s %-15s %-12s\n",
-                                    show.getShowID(),
-                                    show.getMovie().getName(),
-                                    formattedStartTime,
-                                    formattedEndTime
-                            );
-                            foundFutureShow = true;
-                        }
-                    }
-                    if (!foundFutureShow) {
-                        System.out.println("No upcoming shows available.");
-                    }
-
-                    System.out.println("------------------------------------------------");
+                    listShows(screenId);
                     break;
 
                 case "select":
@@ -84,11 +88,10 @@ public class ShowService {
                     }
                     System.out.println("Enter 'book' to book the show");
                     if (scanner.next().equalsIgnoreCase("book")) {
-                        SeatService.seatService(showID);
+                        SeatService.seatService(showID,scanner);
                     }
                     break;
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

@@ -9,8 +9,7 @@ import java.util.Scanner;
 
 public class SeatService {
 
-    public static void seatService(int showID) {
-        Scanner scanner = new Scanner(System.in);
+    public static void seatService(int showID, Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("SEAT MENU :");
@@ -50,7 +49,6 @@ public class SeatService {
 
                     break;
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

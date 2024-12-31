@@ -8,8 +8,7 @@ import java.util.Scanner;
 
 public class TheatreService {
 
-    public static void theatreService() {
-        Scanner scanner = new Scanner(System.in);
+    public static void theatreService(Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("THEATRE MENU :");
@@ -45,11 +44,10 @@ public class TheatreService {
                 case "select":
                     System.out.println("Enter the TheatreID to select that theatre");
                     int theatreId = scanner.nextInt();
-                    ScreenService.screenService(theatreId);
+                    ScreenService.screenService(theatreId,scanner);
                     break;
 
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

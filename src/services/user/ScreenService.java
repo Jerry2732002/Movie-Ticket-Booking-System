@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ScreenService {
-    public static void screenService(int theatreId) {
-        Scanner scanner = new Scanner(System.in);
+    public static void screenService(int theatreId, Scanner scanner) {
+
         String choice;
         while (true) {
             System.out.println("SCREEN MENU :");
@@ -29,11 +29,10 @@ public class ScreenService {
                 case "select":
                     System.out.println("Enter the ScreenID to select that screen");
                     int screenId = scanner.nextInt();
-                    ShowService.showService(screenId);
+                    ShowService.showService(screenId,scanner);
                     break;
 
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

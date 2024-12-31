@@ -8,26 +8,7 @@ import java.util.Scanner;
 
 public class TheatreService {
 
-    public static void addTheatre() {
-        Scanner scanner = new Scanner(System.in);
-        Theatre theatre = new Theatre();
-        System.out.println("Enter Theatre Name");
-        theatre.setName(scanner.nextLine());
-        System.out.println("Enter Location");
-        theatre.setLocation(scanner.nextLine());
-        if (!TheatreDatabase.theatreExists(theatre.getName(), theatre.getLocation())){
-            TheatreDatabase.addTheatre(theatre);
-        }else {
-            System.out.println("Theatre already exists");
-        }
-        System.out.println("Add 4 screen(MUST)");
-        for (int i = 0; i < 4; i++) {
-            ScreenService.addScreen(theatre.getTheatreID());
-        }
-    }
-
-    public static void theatreService() {
-        Scanner scanner = new Scanner(System.in);
+    public static void theatreService(Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("THEATRE MENU :");
@@ -68,20 +49,29 @@ public class TheatreService {
                 case "select":
                     System.out.println("Enter the TheatreID to select that theatre");
                     int theatreId = scanner.nextInt();
-                    ScreenService.screenService(theatreId);
+                    ScreenService.screenService(theatreId,scanner);
                     break;
 
                 case "add":
-                    addTheatre();
+                    Theatre theatre = new Theatre();
+                    System.out.println("Enter Theatre Name");
+                    theatre.setName(scanner.nextLine());
+                    System.out.println("Enter Location");
+                    theatre.setLocation(scanner.nextLine());
+                    if (!TheatreDatabase.theatreExists(theatre.getName(), theatre.getLocation())) {
+                        TheatreDatabase.addTheatre(theatre);
+                    } else {
+                        System.out.println("Theatre already exists");
+                    }
                     break;
 
                 case "remove":
                     System.out.println("Enter TheatreID to remove");
                     int theatreID = scanner.nextInt();
                     scanner.nextLine();
-                    if (TheatreDatabase.hasFutureShows(theatreID)){
+                    if (TheatreDatabase.hasFutureShows(theatreID)) {
                         System.out.println("This Theatre has show for future are you sure you want to delete it(y/n)");
-                        if (!scanner.nextLine().equalsIgnoreCase("y")){
+                        if (!scanner.nextLine().equalsIgnoreCase("y")) {
                             break;
                         }
                     }
@@ -89,7 +79,6 @@ public class TheatreService {
                     break;
 
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");

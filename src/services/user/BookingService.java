@@ -24,8 +24,7 @@ public class BookingService {
         BookingDatabase.bookTicket(booking);
     }
 
-    public static void bookingService() {
-        Scanner scanner = new Scanner(System.in);
+    public static void bookingService(Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("Booking MENU :");
@@ -69,7 +68,6 @@ public class BookingService {
                     }
                     break;
                 case "back":
-                    scanner.close();
                     return;
                 default:
                     System.out.println("Incorrect input");
