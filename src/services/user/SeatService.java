@@ -28,7 +28,7 @@ public class SeatService {
                         }
 
                         if (!seatsInRow.isEmpty()) {
-                            Seat firstSeat = seatsInRow.get(0);
+                            Seat firstSeat = seatsInRow.getFirst();
                             seatRow.append(String.format("[%s %.2f/-]", firstSeat.getCategory(), firstSeat.getPrice()));
                         }
                         System.out.println(seatRow);
@@ -37,7 +37,7 @@ public class SeatService {
                 case "select":
                     System.out.println("Enter the SeatNo to select that seat to book");
                     String seatNo = scanner.next();
-                    int seatID = SeatsDatabase.getSeatIDBySeatNo(seatNo);
+                    int seatID = SeatsDatabase.getSeatIDBySeatNo(seatNo,showID);
                     if (seatID > 0) {
                         System.out.println("Are you sure to book, Enter 'y' for confirmation");
                         if (scanner.next().equalsIgnoreCase("y")){

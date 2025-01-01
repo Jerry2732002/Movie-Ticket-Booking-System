@@ -1,6 +1,4 @@
-import src.database.ShowsDatabase;
 import src.services.admin.AdminService;
-import src.services.admin.SeatService;
 import src.services.user.UserService;
 import java.util.Scanner;
 

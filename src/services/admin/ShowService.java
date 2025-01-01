@@ -15,44 +15,50 @@ import java.util.Scanner;
 public class ShowService {
 
     public static void addShow(int screenId, Scanner scanner) {
-        System.out.println("Enter movie name:");
-        String movieName = scanner.nextLine();
-        int movieID = MoviesDatabase.getMovieIDByName(movieName);
-
-        System.out.println("Enter start date (YYYY-MM-DD):");
-        String startDateInput = scanner.nextLine();
-
-        System.out.println("Enter start time (HH:mm):");
-        String startTimeInput = scanner.nextLine();
-
-        System.out.println("Enter end time (HH:mm):");
-        String endTimeInput = scanner.nextLine();
-
-        try {
-            SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-            java.util.Date startDate = dateTimeFormat.parse(startDateInput + " " + startTimeInput);
-            java.util.Date endDate = dateTimeFormat.parse(startDateInput + " " + endTimeInput);
-
-            Timestamp startTimestamp = new Timestamp(startDate.getTime());
-            Timestamp endTimestamp = new Timestamp(endDate.getTime());
-
-            if (isShowOverlapping(screenId, startTimestamp, endTimestamp)) {
-                System.err.println("The new show overlaps with an existing show on the same screen please try again with correct time");
-                return;
+        while (true) {
+            scanner.nextLine();
+            System.out.println("Enter movie name:");
+            String movieName = scanner.nextLine();
+            if (!MoviesDatabase.movieExistsByName(movieName)) {
+                System.out.println("Movie not found in database");
+                continue;
             }
+            int movieID = MoviesDatabase.getMovieIDByName(movieName);
 
-            Show newShow = new Show();
-            newShow.setScreenID(screenId);
-            newShow.setMovieID(movieID);
-            newShow.setStartTime(startTimestamp);
-            newShow.setEndTime(endTimestamp);
-            newShow.setDate(new Date(startTimestamp.getTime()));
+            System.out.println("Enter start date (YYYY-MM-DD):");
+            String startDateInput = scanner.nextLine();
 
-            ShowsDatabase.addShow(newShow);
-            System.out.println("Show added successfully.");
+            System.out.println("Enter start time (HH:mm):");
+            String startTimeInput = scanner.nextLine();
 
-        } catch (ParseException e) {
-            System.out.println("Invalid date/time format. Please try again.");
+            System.out.println("Enter end time (HH:mm):");
+            String endTimeInput = scanner.nextLine();
+
+            try {
+                SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                java.util.Date startDate = dateTimeFormat.parse(startDateInput + " " + startTimeInput);
+                java.util.Date endDate = dateTimeFormat.parse(startDateInput + " " + endTimeInput);
+
+                Timestamp startTimestamp = new Timestamp(startDate.getTime());
+                Timestamp endTimestamp = new Timestamp(endDate.getTime());
+
+                if (isShowOverlapping(screenId, startTimestamp, endTimestamp)) {
+                    System.err.println("The new show overlaps with an existing show on the same screen please try again with correct time");
+                    continue;
+                }
+
+                Show newShow = new Show();
+                newShow.setScreenID(screenId);
+                newShow.setMovieID(movieID);
+                newShow.setStartTime(startTimestamp);
+                newShow.setEndTime(endTimestamp);
+                newShow.setDate(new Date(startTimestamp.getTime()));
+
+                ShowsDatabase.addShow(newShow);
+                break;
+            } catch (ParseException e) {
+                System.out.println("Invalid date/time format. Please try again.");
+            }
         }
     }
 
@@ -72,19 +78,25 @@ public class ShowService {
 
     public static void removeShow(int screenId, Scanner scanner) {
         System.out.println("Enter ShowID to remove:");
+        scanner.nextLine();
         int showID = Integer.parseInt(scanner.nextLine());
-        if (ShowsDatabase.getNoOfShows(screenId) >= 4) {
-            System.out.println("There are " + ShowsDatabase.getNoOfBooking(showID) + " booking for this show");
-            System.out.println("Are you sure you want to remove ShowID: " + showID + " (y/n)");
-            String confirmation = scanner.nextLine().toLowerCase();
 
-            if (confirmation.equalsIgnoreCase("y")) {
-                ShowsDatabase.deleteShowByShowID(showID);
+        if (ShowsDatabase.checkShowExists(showID)) {
+            if (ShowsDatabase.getNoOfShows(screenId) > 4) {
+                System.out.println("There are " + ShowsDatabase.getNoOfBooking(showID) + " booking for this show");
+                System.out.println("Are you sure you want to remove ShowID: " + showID + " (y/n)");
+                String confirmation = scanner.nextLine().toLowerCase();
+
+                if (confirmation.equalsIgnoreCase("y")) {
+                    ShowsDatabase.deleteShowByShowID(showID);
+                } else {
+                    System.out.println("Show removal cancelled.");
+                }
             } else {
-                System.out.println("Show removal cancelled.");
+                System.out.println("Cannot delete show as only 4 shows left");
             }
-        }else {
-            System.out.println("Cannot delete show as only 4 shows left");
+        } else {
+            System.out.println("Show with ID:" + showID + " does not exist check again");
         }
     }
 

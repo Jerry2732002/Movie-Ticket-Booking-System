@@ -17,14 +17,15 @@ public class ShowService {
     public static void listShows(int screenId) {
         List<Show> shows = ShowsDatabase.getAllShowByScreenID(screenId);
         System.out.println("Shows List for Screen ID: " + screenId);
-        System.out.println("------------------------------------------------");
-        System.out.printf("%-10s %-30s %-15s %-12s\n", "ShowID", "Movie Name", "StartTime", "EndTime");
-        System.out.println("------------------------------------------------");
+        System.out.println("-----------------------------------------------------------------------------------");
+        System.out.printf("%-10s %-30s %-15s %-15s %-12s\n", "ShowID", "Movie Name", "Date", "StartTime", "EndTime");
+        System.out.println("-----------------------------------------------------------------------------------");
 
         LocalDateTime currentDateTime = LocalDateTime.now();
 
         boolean foundFutureShow = false;
 
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         for (Show show : shows) {
@@ -32,13 +33,15 @@ public class ShowService {
             LocalDateTime showStartDateTime = startTime.toLocalDateTime();
 
             if (showStartDateTime.isAfter(currentDateTime) || showStartDateTime.isEqual(currentDateTime)) {
+                String formattedDate = showStartDateTime.format(dateFormatter);
                 String formattedStartTime = showStartDateTime.format(timeFormatter);
                 LocalDateTime showEndDateTime = show.getEndTime().toLocalDateTime();
                 String formattedEndTime = showEndDateTime.format(timeFormatter);
 
-                System.out.printf("%-10d %-30s %-15s %-12s\n",
+                System.out.printf("%-10d %-30s %-15s %-15s %-12s\n",
                         show.getShowID(),
                         show.getMovie().getName(),
+                        formattedDate,
                         formattedStartTime,
                         formattedEndTime
                 );
@@ -49,8 +52,9 @@ public class ShowService {
             System.out.println("No upcoming shows available.");
         }
 
-        System.out.println("------------------------------------------------");
+        System.out.println("-----------------------------------------------------------------------------------");
     }
+
 
     public static void showService(int screenId,Scanner scanner) {
         String choice;
@@ -66,13 +70,15 @@ public class ShowService {
                 case "select":
                     System.out.println("Enter the ShowID to select that show");
                     int showID = scanner.nextInt();
+
                     System.out.println("Enter 'details' if you like display of the details of the movie");
                     if (scanner.next().equalsIgnoreCase("details")) {
                         System.out.println("--------------------------------------------------------------------------------------------");
                         System.out.printf("%-5s %-30s %-12s %-20s %-25s\n", "ID", "Name", "Duration", "Genre", "Director");
                         System.out.println("--------------------------------------------------------------------------------------------");
-                        Movie movie = ShowsDatabase.getShowByShowID(showID).getMovie();
-                        if (movie != null) {
+                        Show show = ShowsDatabase.getShowByShowID(showID);
+                        if (show != null) {
+                            Movie movie = show.getMovie();
                             System.out.printf(
                                     "%-5d %-30s %-12s %-20s %-25s\n",
                                     movie.getMovieID(),

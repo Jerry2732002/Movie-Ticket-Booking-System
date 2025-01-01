@@ -49,7 +49,11 @@ public class TheatreService {
                 case "select":
                     System.out.println("Enter the TheatreID to select that theatre");
                     int theatreId = scanner.nextInt();
-                    ScreenService.screenService(theatreId,scanner);
+                    if (TheatreDatabase.checkTheatreExist(theatreId)) {
+                        ScreenService.screenService(theatreId, scanner);
+                    } else {
+                        System.out.println("Theater with ID:" + theatreId + " does not exist check again");
+                    }
                     break;
 
                 case "add":

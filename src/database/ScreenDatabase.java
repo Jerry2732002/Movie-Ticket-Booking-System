@@ -81,6 +81,20 @@ public class ScreenDatabase {
         return false;
     }
 
+    public static boolean checkScreenExists(int screenID) {
+        String query = "SELECT 1 FROM screens WHERE ScreenID = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, screenID);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("Error while checking screen exists: " + e.getMessage());
+        }
+        return false;
+    }
+
     public static int getScreenID(int theatreID, int screenNo) {
         String query = "SELECT ScreenID FROM screens \n" +
                 "WHERE ScreenNo = ? AND TheatreID = ?";

@@ -119,7 +119,20 @@ public class TheatreDatabase {
         return theatres;
     }
 
-
+    public static boolean checkTheatreExist(int theatreID) {
+        String query = "SELECT 1 FROM theatres\n" +
+                "WHERE TheatreID = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, theatreID);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("Error while checking if theatre exists: " + e.getMessage());
+        }
+        return false;
+    }
 
     public static boolean hasFutureShows(int theatreID) {
         String query = "SELECT 1 FROM theatres t \n" +

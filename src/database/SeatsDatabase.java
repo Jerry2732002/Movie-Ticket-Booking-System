@@ -86,12 +86,15 @@ public class SeatsDatabase {
         return seatIDs;
     }
 
-    public static int getSeatIDBySeatNo(String seatNo) {
-        String query = "SELECT SeatID FROM seats WHERE SeatNo = ?";
+    public static int getSeatIDBySeatNo(String seatNo, int showID) {
+        String query = "SELECT SeatID FROM seats s\n" +
+                "JOIN shows sh ON sh.ScreenID = s.ScreenID\n" +
+                "WHERE SeatNo = ? AND ShowID = ?";
         int seatID = -1;
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1,seatNo);
+            statement.setInt(2,showID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 seatID = resultSet.getInt("SeatID");

@@ -2,6 +2,7 @@ package src.services.user;
 
 import src.database.ScreenDatabase;
 import src.entities.Screen;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -29,7 +30,11 @@ public class ScreenService {
                 case "select":
                     System.out.println("Enter the ScreenID to select that screen");
                     int screenId = scanner.nextInt();
-                    ShowService.showService(screenId,scanner);
+                    if (ScreenDatabase.checkScreenExists(screenId)) {
+                        ShowService.showService(screenId, scanner);
+                    } else {
+                        System.out.println("Screen with ID:" + screenId + " does not exist check again");
+                    }
                     break;
 
                 case "back":

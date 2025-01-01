@@ -41,7 +41,11 @@ public class ScreenService {
                 case "select":
                     System.out.println("Enter the ScreenID to select that screen");
                     int screenId = scanner.nextInt();
-                    ShowService.showService(screenId, scanner);
+                    if (ScreenDatabase.checkScreenExists(screenId)) {
+                        ShowService.showService(screenId, scanner);
+                    } else {
+                        System.out.println("Screen with ID:" + screenId + " does not exist check again");
+                    }
                     break;
 
                 case "add":
@@ -55,12 +59,12 @@ public class ScreenService {
                         ScreenDatabase.addScreen(screen);
 
                         System.out.println("Add seats to the screen----> Going to seats operation");
-                        int screenID = ScreenDatabase.getScreenID(theatreId,screenNo);
-                        SeatService.addSeats(screenID,scanner);
+                        int screenID = ScreenDatabase.getScreenID(theatreId, screenNo);
+                        SeatService.addSeats(screenID, scanner);
 
                         System.out.println("Mandatory for new screen to have atleast 4 shows. \nPlease Enter 4 shows");
                         for (int i = 0; i < 4; i++) {
-                            ShowService.addShow(screenID,scanner);
+                            ShowService.addShow(screenID, scanner);
                         }
                     } else {
                         System.out.println("Screen No. already exists");

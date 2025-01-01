@@ -12,7 +12,7 @@ import java.util.List;
 
 public class ShowsDatabase {
     public static void addShow(Show show) {
-        String query = "INSERT INTO shows (MovieID, StartTime, EndTime, Date) VALUES (?,?,?,?)";
+        String query = "INSERT INTO shows (ScreenID, MovieID, StartTime, EndTime) VALUES (?,?,?,?)";
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)
         ) {
@@ -20,7 +20,6 @@ public class ShowsDatabase {
             statement.setInt(2, show.getMovieID());
             statement.setTimestamp(3, show.getStartTime());
             statement.setTimestamp(4, show.getEndTime());
-            statement.setDate(5, show.getDate());
             int rowsAffected = statement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Show successfully added");
@@ -57,10 +56,10 @@ public class ShowsDatabase {
             statement.setInt(1, screenID);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                Show show = new Show(resultSet.getInt("ShowID"),resultSet.getInt("ScreenID"),resultSet.getInt("MovieID"),
-                        resultSet.getTimestamp("StartTime"),resultSet.getTimestamp("EndTime"));
-                Movie movie = new Movie(resultSet.getInt("MovieID"),resultSet.getString("Name"),resultSet.getTime("Duration")
-                        ,resultSet.getString("Genre"),resultSet.getString("Director"),resultSet.getString("Cast"),resultSet.getString("Description"));
+                Show show = new Show(resultSet.getInt("ShowID"), resultSet.getInt("ScreenID"), resultSet.getInt("MovieID"),
+                        resultSet.getTimestamp("StartTime"), resultSet.getTimestamp("EndTime"));
+                Movie movie = new Movie(resultSet.getInt("MovieID"), resultSet.getString("Name"), resultSet.getTime("Duration")
+                        , resultSet.getString("Genre"), resultSet.getString("Director"), resultSet.getString("Cast"), resultSet.getString("Description"));
                 show.setMovie(movie);
                 shows.add(show);
             }
@@ -77,10 +76,10 @@ public class ShowsDatabase {
             statement.setInt(1, showId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Show show = new Show(resultSet.getInt("ShowID"),resultSet.getInt("ScreenID"),resultSet.getInt("MovieID"),
-                        resultSet.getTimestamp("StartTime"),resultSet.getTimestamp("EndTime"));
-                Movie movie = new Movie(resultSet.getInt("MovieID"),resultSet.getString("Name"),resultSet.getTime("Duration")
-                        ,resultSet.getString("Genre"),resultSet.getString("Director"),resultSet.getString("Cast"),resultSet.getString("Description"));
+                Show show = new Show(resultSet.getInt("ShowID"), resultSet.getInt("ScreenID"), resultSet.getInt("MovieID"),
+                        resultSet.getTimestamp("StartTime"), resultSet.getTimestamp("EndTime"));
+                Movie movie = new Movie(resultSet.getInt("MovieID"), resultSet.getString("Name"), resultSet.getTime("Duration")
+                        , resultSet.getString("Genre"), resultSet.getString("Director"), resultSet.getString("Cast"), resultSet.getString("Description"));
                 show.setMovie(movie);
                 return show;
             }
@@ -139,6 +138,20 @@ public class ShowsDatabase {
             return rowsAffected > 0;
         } catch (SQLException e) {
             System.err.println("Error while updating show: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public static boolean checkShowExists(int showID) {
+        String query = "SELECT 1 FROM shows WHERE ShowID = ?";
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setInt(1, showID);
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next();
+        } catch (SQLException e) {
+            System.out.println("Error while checking screen exists: " + e.getMessage());
         }
         return false;
     }

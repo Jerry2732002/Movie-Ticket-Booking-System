@@ -2,7 +2,7 @@ package src.services.user;
 
 import src.database.TheatreDatabase;
 import src.entities.Theatre;
-
+import src.services.user.ScreenService;
 import java.util.List;
 import java.util.Scanner;
 
@@ -44,7 +44,11 @@ public class TheatreService {
                 case "select":
                     System.out.println("Enter the TheatreID to select that theatre");
                     int theatreId = scanner.nextInt();
-                    ScreenService.screenService(theatreId,scanner);
+                    if (TheatreDatabase.checkTheatreExist(theatreId)) {
+                        ScreenService.screenService(theatreId, scanner);
+                    } else {
+                        System.out.println("Theater with ID:" + theatreId + " does not exist check again");
+                    }
                     break;
 
                 case "back":
