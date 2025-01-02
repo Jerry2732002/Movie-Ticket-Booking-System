@@ -74,27 +74,6 @@ public class MoviesDatabase {
         }
     }
 
-    public static Movie findMovieByName(String name) {
-        Movie movie = new Movie();
-        String query = "SELECT * FROM movies WHERE Name = ?";
-        try (Connection connection = CreateConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, name);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                movie.setMovieID(resultSet.getInt(1));
-                movie.setName(resultSet.getString(2));
-                movie.setDuration(resultSet.getTime(3));
-                movie.setGenre(Genre.valueOf(resultSet.getString(4)));
-                movie.setDirector(resultSet.getString(5));
-                movie.setCast(resultSet.getString(6));
-                movie.setDescription(resultSet.getString(7));
-            }
-            return movie;
-        } catch (SQLException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
 
     public static int getMovieIDByName(String name) {
         int id = 0;

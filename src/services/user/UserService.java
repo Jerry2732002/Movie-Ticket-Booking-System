@@ -11,15 +11,11 @@ public class UserService {
         String choice;
         while (true) {
             System.out.println("USER MENU :");
-            System.out.println("Enter 'theatre' to go to theatre operation" +
-                    "\nEnter 'booking' to go to booking operation" +
+            System.out.println("Enter 'booking' to go to booking operation" +
                     "\nEnter 'movie' to go to movies operations" +
                     "\nEnter 'back' to go back");
             choice = scanner.next().toLowerCase();
             switch (choice) {
-                case "theatre":
-                    TheatreService.theatreService(scanner);
-                    break;
                 case "booking":
                     BookingService.bookingService(scanner);
                     break;

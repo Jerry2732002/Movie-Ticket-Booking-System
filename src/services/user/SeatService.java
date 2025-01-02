@@ -20,9 +20,11 @@ public class SeatService {
                     Map<String, List<Seat>> availableSeats = BookingDatabase.getAvailableSeats(showID);
 
                     for (Map.Entry<String, List<Seat>> entry : availableSeats.entrySet()) {
-                        String row = entry.getKey();
+
                         List<Seat> seatsInRow = entry.getValue();
+
                         StringBuilder seatRow = new StringBuilder();
+
                         for (Seat seat : seatsInRow) {
                             seatRow.append(seat.getSeatNo()).append(" ");
                         }
@@ -31,22 +33,36 @@ public class SeatService {
                             Seat firstSeat = seatsInRow.getFirst();
                             seatRow.append(String.format("[%s %.2f/-]", firstSeat.getCategory(), firstSeat.getPrice()));
                         }
+
                         System.out.println(seatRow);
                     }
                     break;
                 case "select":
-                    System.out.println("Enter the SeatNo to select that seat to book");
-                    String seatNo = scanner.next();
-                    int seatID = SeatsDatabase.getSeatIDBySeatNo(seatNo,showID);
-                    if (seatID > 0) {
-                        System.out.println("Are you sure to book, Enter 'y' for confirmation");
-                        if (scanner.next().equalsIgnoreCase("y")){
-                            BookingService.bookTicket(showID,seatID);
-                        }
-                    }else {
-                        System.out.println("No seat with Seat No. :" + seatNo);
-                    }
+                    System.out.println("Enter the SeatNo(s) to select (comma-separated) for booking:");
+                    String seatNos = scanner.next();
 
+                    String[] seatNoArray = seatNos.split(",");
+
+                    for (String seatNo : seatNoArray) {
+                        seatNo = seatNo.trim();
+
+                        System.out.println(seatNo);
+
+                        int seatID = SeatsDatabase.getSeatIDBySeatNo(seatNo, showID);
+
+                        if (seatID > 0) {
+                            System.out.println("You selected Seat No: " + seatNo + ". Do you want to book this seat? Enter 'y' to confirm.");
+                            scanner.nextLine();
+                            if (scanner.next().equalsIgnoreCase("y")) {
+                                BookingService.bookTicket(showID, seatID);
+                                System.out.println("Seat " + seatNo + " booked successfully.");
+                            } else {
+                                System.out.println("Booking for Seat No " + seatNo + " was not confirmed.");
+                            }
+                        } else {
+                            System.out.println("No seat found with Seat No: " + seatNo);
+                        }
+                    }
                     break;
                 case "back":
                     return;

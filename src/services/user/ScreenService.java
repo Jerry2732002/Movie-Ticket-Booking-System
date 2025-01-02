@@ -28,8 +28,9 @@ public class ScreenService {
                     break;
 
                 case "select":
-                    System.out.println("Enter the ScreenID to select that screen");
-                    int screenId = scanner.nextInt();
+                    System.out.println("Enter the ScreenNo to select that screen");
+                    int screenNo = scanner.nextInt();
+                    int screenId = ScreenDatabase.getScreenID(theatreId,screenNo);
                     if (ScreenDatabase.checkScreenExists(screenId)) {
                         ShowService.showService(screenId, scanner);
                     } else {

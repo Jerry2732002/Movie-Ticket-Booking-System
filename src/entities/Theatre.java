@@ -4,6 +4,7 @@ public class Theatre {
     private int theatreID;
     private String name;
     private String location;
+    private int ScreenNo;
 
     public int getTheatreID() {
         return theatreID;
@@ -23,6 +24,14 @@ public class Theatre {
 
     public String getLocation() {
         return location;
+    }
+
+    public int getScreenNo() {
+        return ScreenNo;
+    }
+
+    public void setScreenNo(int screenNo) {
+        ScreenNo = screenNo;
     }
 
     public void setLocation(String location) {

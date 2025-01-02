@@ -3,12 +3,13 @@ package src.services.user;
 import src.database.TheatreDatabase;
 import src.entities.Theatre;
 import src.services.user.ScreenService;
+
 import java.util.List;
 import java.util.Scanner;
 
 public class TheatreService {
 
-    public static void theatreService(Scanner scanner) {
+    public static void theatreService(String movieName, Scanner scanner) {
         String choice;
         while (true) {
             System.out.println("THEATRE MENU :");
@@ -16,15 +17,15 @@ public class TheatreService {
             choice = scanner.next().toLowerCase();
             switch (choice) {
                 case "list":
-                    List<Theatre> theatres = TheatreDatabase.listAllTheatres();
+                    List<Theatre> theatres = TheatreDatabase.listAllTheatresWithMovie(movieName);
                     System.out.println("Theatres List:");
-                    System.out.println("------------------------------------------------");
-                    System.out.printf("%-5s %-30s %-50s\n", "ID", "Name", "Location");
-                    System.out.println("------------------------------------------------");
+                    System.out.println("----------------------------------------------------------------------------------------");
+                    System.out.printf("%-5s %-30s %-30s %-10s\n", "ID", "Name", "Location", "Screen No.");
+                    System.out.println("----------------------------------------------------------------------------------------");
                     for (Theatre theatre : theatres) {
-                        System.out.printf("%-5d %-30s %-50s\n", theatre.getTheatreID(), theatre.getName(), theatre.getLocation());
+                        System.out.printf("%-5d %-30s %-30s %-10s\n", theatre.getTheatreID(), theatre.getName(), theatre.getLocation(), theatre.getScreenNo());
                     }
-                    System.out.println("------------------------------------------------");
+                    System.out.println("----------------------------------------------------------------------------------------");
                     break;
 
                 case "search":

@@ -90,21 +90,18 @@ public class SeatsDatabase {
         String query = "SELECT SeatID FROM seats s\n" +
                 "JOIN shows sh ON sh.ScreenID = s.ScreenID\n" +
                 "WHERE SeatNo = ? AND ShowID = ?";
-        int seatID = -1;
         try (Connection connection = CreateConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1,seatNo);
-            statement.setInt(2,showID);
+            statement.setString(1, seatNo);
+            statement.setInt(2, showID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                seatID = resultSet.getInt("SeatID");
-            }else {
-                return -1;
+                return resultSet.getInt("SeatID");
             }
         } catch (SQLException e) {
             System.err.println("Error while fetching all seats: " + e.getMessage());
         }
-        return seatID;
+        return -1;
     }
 
     public static List<String> getAllSeatNos() {

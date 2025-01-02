@@ -80,21 +80,6 @@ public class BookingDatabase {
         return showDate;
     }
 
-    public static int getBookingCountForShow(int showID) {
-        String query = "SELECT COUNT(*) FROM bookings WHERE ShowID = ?";
-        try (Connection connection = CreateConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, showID);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                return resultSet.getInt(1);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error while fetching booking count: " + e.getMessage());
-        }
-        return 0;
-    }
-
     public static void cancelBooking(int bookingID) {
         String query = "UPDATE bookings SET Status = 'CANCELLED' WHERE BookingID = ?";
         try (Connection connection = CreateConnection.getConnection();
@@ -109,22 +94,6 @@ public class BookingDatabase {
         } catch (SQLException e) {
             System.err.println("Error while cancelling booking: " + e.getMessage());
         }
-    }
-
-    public static int getNoOfAvailableSeats(int showId) {
-        String query = "SELECT count(SeatID) AS AvailableSeats FROM seats WHERE SeatID NOT IN (SELECT SeatID FROM bookings) AND ShowID = ?";
-        int noOfRowsAvailable = 0;
-        try (Connection connection = CreateConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, showId);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                noOfRowsAvailable = resultSet.getInt("AvailableSeats");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error while cancelling booking: " + e.getMessage());
-        }
-        return noOfRowsAvailable;
     }
 
     public static Map<String, List<Seat>> getAvailableSeats(int showId) {
@@ -159,7 +128,6 @@ public class BookingDatabase {
         } catch (SQLException e) {
             System.err.println("Error while retrieving available seats: " + e.getMessage());
         }
-
         return availableSeats;
     }
 }

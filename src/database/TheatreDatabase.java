@@ -46,6 +46,32 @@ public class TheatreDatabase {
         return theatres;
     }
 
+    public static List<Theatre> listAllTheatresWithMovie(String movieName) {
+        String query = "SELECT DISTINCT t.TheatreID, t.Name, t.Location, sc.ScreenNo FROM theatres t\n" +
+                "JOIN screens sc ON sc.TheatreID = t.TheatreID\n" +
+                "JOIN shows sh ON sh.ScreenID = sc.ScreenID\n" +
+                "JOIN movies m ON m.MovieID = sh.MovieID\n" +
+                "WHERE m.Name = ? AND sh.StartTime > NOW()";
+        List<Theatre> theatres = new ArrayList<>();
+        try (Connection connection = CreateConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)
+        ) {
+            statement.setString(1,movieName);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                Theatre theatre = new Theatre();
+                theatre.setTheatreID(resultSet.getInt("TheatreID"));
+                theatre.setName(resultSet.getString("Name"));
+                theatre.setLocation(resultSet.getString("Location"));
+                theatre.setScreenNo(resultSet.getInt("ScreenNo"));
+                theatres.add(theatre);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error while retrieving theatres: " + e.getMessage());
+        }
+        return theatres;
+    }
+
     public static void deleteTheatre(int theatreID) {
         String query = "DELETE FROM theatres WHERE TheatreID = ?";
         try (Connection connection = CreateConnection.getConnection();

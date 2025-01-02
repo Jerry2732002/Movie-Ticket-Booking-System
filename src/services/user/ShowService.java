@@ -71,8 +71,8 @@ public class ShowService {
                     System.out.println("Enter the ShowID to select that show");
                     int showID = scanner.nextInt();
 
-                    System.out.println("Enter 'details' if you like display of the details of the movie");
-                    if (scanner.next().equalsIgnoreCase("details")) {
+                    System.out.println("Would you like to see the details of the movie(y/n)");
+                    if (scanner.next().equalsIgnoreCase("y")) {
                         System.out.println("--------------------------------------------------------------------------------------------");
                         System.out.printf("%-5s %-30s %-12s %-20s %-25s\n", "ID", "Name", "Duration", "Genre", "Director");
                         System.out.println("--------------------------------------------------------------------------------------------");
@@ -90,15 +90,16 @@ public class ShowService {
                         }else {
                             System.out.println("No show found with id : " + showID);
                         }
-
                     }
                     System.out.println("Enter 'book' to book the show");
                     if (scanner.next().equalsIgnoreCase("book")) {
                         SeatService.seatService(showID,scanner);
                     }
                     break;
+
                 case "back":
                     return;
+
                 default:
                     System.out.println("Incorrect input");
             }
