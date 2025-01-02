@@ -101,6 +101,7 @@ public class ShowService {
     }
 
     public static void updateShow(int screenId, Scanner scanner) {
+        scanner.nextLine();
         System.out.println("Enter ShowID to update:");
         int showID = Integer.parseInt(scanner.nextLine());
 
